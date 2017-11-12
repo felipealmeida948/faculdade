@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+<body>
+    <canvas id="meu_canvas" width="1439" height="900"  ></canvas>
+    <script>
+        x = 500; 
+        balas = new Array();
+        function Fundo() {
+            var fundo = new Image(); 
+            fundo.src = 'imagens/fundo.jpg'; 
+            fundo.onload = function(){
+                ctx.drawImage(fundo,0,0,1439,900); 
+            }    
+        }
+
+        function Nave() {
+            var nave = new Image(); 
+            nave.src = 'imagens/nave.png'; 
+            nave.onload = function (){
+                ctx.drawImage(nave,x,700,128,128)
+            }
+        }
+
+        function Tiro() {
+            this.xt = x; 
+            this.yt = 700; 
+            this.mover = function(){
+                ctx.fillStyle="#2ecc71"; 
+                ctx.fillRect(this.xt + 60, this.yt, 10, 30); 
+                this.yt-=3*decorrido/10;
+                if (this.yt<3) {
+                    this.yt = 700; 
+                    balas.splice(0,5);
+                }
+            }
+        }
+        
+        function Desenhar(){
+            agora = new Date().getTime(); 
+            decorrido = agora - anterior; 
+            Fundo();
+            Nave(); 
+            for (var c=0; c<balas.length;c++)
+                balas[c].mover(); 
+            
+            anterior = agora; 
+            requestAnimationFrame(Desenhar); 
+        }
+
+        var canvas = document.getElementById("meu_canvas"); 
+        var ctx = canvas.getContext("2d"); 
+        anterior = new Date().getTime(); 
+        // ctx = contexto
+        requestAnimationFrame(Desenhar); 
+
+        somTiro = new Audio("sons/tiro.mp3"); 
+        somFundo = new Audio ("sons/fundo.mp3").play();
+
+        document.addEventListener('keydown', function(evento){
+            if(evento.keyCode == 37){
+                //SETA PARA ESQUERDA
+                x-=30;
+            }
+            if (evento.keyCode == 39){
+                //SETA PARA DIREITA
+                x+=30; 
+            }
+            if (evento.keyCode == 32){
+                //BARRA DE ESPAÇO
+                balas[balas.length] = new Tiro(); 
+//                somTiro.currentTime = 30; 
+                somTiro.play(); 
+            }
+        });
+    </script>
+</body>
+</html>
